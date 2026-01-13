@@ -19,12 +19,26 @@ from sklearn.ensemble import (
     AdaBoostClassifier,
 )
 from sklearn.tree import DecisionTreeClassifier
+import mlflow
 
 class ModelTrainer:
     def __init__(self, data_transformation_artifact: DataTransformationArtifact, model_trainer_config: ModelTrainerConfig):
         try:
             self.data_transformation_artifact = data_transformation_artifact
             self.model_trainer_config = model_trainer_config
+        except Exception as e:
+            raise NetworkSecurityException(e, sys) from e
+    
+    def track_mlflow(self, model, classification_metric):
+        try:
+            with mlflow.start_run():
+                f1_score = classification_metric.f1_score
+                precision = classification_metric.precision_score
+                recall = classification_metric.recall_score
+                mlflow.log_metric("F1_Score", f1_score)
+                mlflow.log_metric("Precision", precision)
+                mlflow.log_metric("Recall", recall)
+                mlflow.sklearn.log_model(model, "model")
         except Exception as e:
             raise NetworkSecurityException(e, sys) from e
     def train_model(self, x_train, y_train, x_test, y_test) -> ModelTrainerArtifact:
@@ -70,10 +84,14 @@ class ModelTrainer:
             best_model.fit(x_train, y_train)
             y_train_pred = best_model.predict(x_train)
             classification_train_metric = get_classification_score(y_true=y_train, y_pred=y_train_pred)
+
             ## function to track in MLFLOW
+            self.track_mlflow(best_model, classification_train_metric)
 
             y_test_pred = best_model.predict(x_test)
             classification_test_metric = get_classification_score(y_true=y_test, y_pred=y_test_pred)
+
+            self.track_mlflow(best_model, classification_test_metric)
 
             model_dir_path = os.path.dirname(self.model_trainer_config.trained_model_file_path)
             os.makedirs(model_dir_path, exist_ok=True)
