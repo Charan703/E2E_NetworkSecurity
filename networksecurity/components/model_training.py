@@ -21,6 +21,9 @@ from sklearn.ensemble import (
 from sklearn.tree import DecisionTreeClassifier
 import mlflow
 
+import dagshub
+dagshub.init(repo_owner='charanteja.kammari939', repo_name='E2E_NetworkSecurity', mlflow=True)
+
 class ModelTrainer:
     def __init__(self, data_transformation_artifact: DataTransformationArtifact, model_trainer_config: ModelTrainerConfig):
         try:
@@ -31,16 +34,23 @@ class ModelTrainer:
     
     def track_mlflow(self, model, classification_metric):
         try:
+            # Use DagsHub remote tracking (remove local tracking URI)
             with mlflow.start_run():
                 f1_score = classification_metric.f1_score
                 precision = classification_metric.precision_score
                 recall = classification_metric.recall_score
+                
                 mlflow.log_metric("F1_Score", f1_score)
                 mlflow.log_metric("Precision", precision)
                 mlflow.log_metric("Recall", recall)
                 mlflow.sklearn.log_model(model, "model")
+                
+                logging.info(f"MLflow tracking - F1: {f1_score}, Precision: {precision}, Recall: {recall}")
+                
         except Exception as e:
-            raise NetworkSecurityException(e, sys) from e
+            # Fallback to logging if MLflow fails
+            logging.warning(f"MLflow tracking failed: {e}")
+            logging.info(f"Model metrics - F1: {classification_metric.f1_score}, Precision: {classification_metric.precision_score}, Recall: {classification_metric.recall_score}")
     def train_model(self, x_train, y_train, x_test, y_test) -> ModelTrainerArtifact:
         logging.info("Training the model")
         try:
