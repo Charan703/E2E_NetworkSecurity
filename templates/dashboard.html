@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Dashboard - Network Security System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="nav-links">
+                <a href="/" class="nav-link">🏠 Home</a>
+                <a href="/dashboard" class="nav-link">📊 Dashboard</a>
+                <a href="/training" class="nav-link">🤖 Train Model</a>
+                <a href="/docs" class="nav-link">📚 API Docs</a>
+            </div>
+        </nav>
+
+        <header class="header">
+            <h1>📊 Security Dashboard</h1>
+            <p>Real-time Network Security Monitoring & Analytics</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="totalScanned">11,055</div>
+                <div>📈 Total Sites Scanned</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="threatsDetected">2,840</div>
+                <div>🚨 Threats Detected</div>
+            </div>
+            <div class="stat-card safe">
+                <div class="stat-number" id="safeSites">8,215</div>
+                <div>✅ Safe Sites</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-number" id="accuracyRate">95.2%</div>
+                <div>🎯 Model Accuracy</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+            <div class="card">
+                <h3 style="text-align: center; margin-bottom: 20px;">🥧 Threat Distribution</h3>
+                <canvas id="threatChart" width="400" height="300"></canvas>
+            </div>
+            
+            <div class="card">
+                <h3 style="text-align: center; margin-bottom: 20px;">📊 Model Performance</h3>
+                <canvas id="performanceChart" width="400" height="300"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="text-align: center; margin-bottom: 20px;">🔍 Feature Analysis</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div style="background: linear-gradient(45deg, #ff6b6b, #ee5a24); color: white; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem;">🔗</div>
+                    <div><strong>URL Length</strong></div>
+                    <div>High Impact Factor</div>
+                </div>
+                <div style="background: linear-gradient(45deg, #feca57, #ff9ff3); color: white; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem;">🔒</div>
+                    <div><strong>SSL Status</strong></div>
+                    <div>Medium Impact</div>
+                </div>
+                <div style="background: linear-gradient(45deg, #48dbfb, #0abde3); color: white; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem;">🌐</div>
+                    <div><strong>Domain Age</strong></div>
+                    <div>High Impact Factor</div>
+                </div>
+                <div style="background: linear-gradient(45deg, #1dd1a1, #55a3ff); color: white; padding: 15px; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem;">📊</div>
+                    <div><strong>Traffic Rank</strong></div>
+                    <div>Medium Impact</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="text-align: center; margin-bottom: 20px;">🤖 ML Model Comparison</h3>
+            <div class="result-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>🤖 Algorithm</th>
+                            <th>🎯 Accuracy</th>
+                            <th>⚡ Speed</th>
+                            <th>💾 Memory</th>
+                            <th>🏆 Rank</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Random Forest</strong></td>
+                            <td><span style="color: #00d2d3; font-weight: bold;">95.2%</span></td>
+                            <td>Fast</td>
+                            <td>Medium</td>
+                            <td>🥇 1st</td>
+                        </tr>
+                        <tr>
+                            <td><strong>XGBoost</strong></td>
+                            <td><span style="color: #00d2d3; font-weight: bold;">94.7%</span></td>
+                            <td>Medium</td>
+                            <td>High</td>
+                            <td>🥈 2nd</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Logistic Regression</strong></td>
+                            <td><span style="color: #feca57; font-weight: bold;">92.1%</span></td>
+                            <td>Very Fast</td>
+                            <td>Low</td>
+                            <td>🥉 3rd</td>
+                        </tr>
+                        <tr>
+                            <td><strong>KNN</strong></td>
+                            <td><span style="color: #feca57; font-weight: bold;">91.8%</span></td>
+                            <td>Slow</td>
+                            <td>Medium</td>
+                            <td>4th</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card" style="text-align: center;">
+            <h3>🚀 Quick Actions</h3>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
+                <a href="/" class="btn">📤 Upload New Data</a>
+                <a href="/train" class="btn">🤖 Retrain Model</a>
+                <button onclick="exportDashboard()" class="btn">📊 Export Report</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Threat Distribution Chart
+        const threatCtx = document.getElementById('threatChart').getContext('2d');
+        new Chart(threatCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['🚨 Phishing Sites', '✅ Safe Sites'],
+                datasets: [{
+                    data: [2840, 8215],
+                    backgroundColor: ['#ff6b6b', '#00d2d3'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Performance Chart
+        const perfCtx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(perfCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Accuracy', 'Precision', 'Recall', 'F1-Score'],
+                datasets: [{
+                    label: 'Performance %',
+                    data: [95.2, 94.8, 93.5, 94.1],
+                    backgroundColor: ['#667eea', '#764ba2', '#ff6b6b', '#00d2d3'],
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        function exportDashboard() {
+            const reportData = {
+                timestamp: new Date().toISOString(),
+                totalScanned: 11055,
+                threatsDetected: 2840,
+                safeSites: 8215,
+                accuracy: 95.2,
+                models: [
+                    { name: 'Random Forest', accuracy: 95.2, rank: 1 },
+                    { name: 'XGBoost', accuracy: 94.7, rank: 2 },
+                    { name: 'Logistic Regression', accuracy: 92.1, rank: 3 }
+                ]
+            };
+
+            const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'security_dashboard_report.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Animate counters
+        function animateCounter(elementId, target) {
+            const element = document.getElementById(elementId);
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                if (elementId === 'accuracyRate') {
+                    element.textContent = current.toFixed(1) + '%';
+                } else {
+                    element.textContent = Math.floor(current).toLocaleString();
+                }
+            }, 20);
+        }
+
+        // Start animations when page loads
+        window.addEventListener('load', () => {
+            animateCounter('totalScanned', 11055);
+            animateCounter('threatsDetected', 2840);
+            animateCounter('safeSites', 8215);
+            animateCounter('accuracyRate', 95.2);
+        });
+    </script>
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

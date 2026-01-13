@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Analysis Results - Network Security System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔍</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="nav-links">
+                <a href="/" class="nav-link">🏠 Home</a>
+                <a href="/dashboard" class="nav-link">📊 Dashboard</a>
+                <a href="/training" class="nav-link">🤖 Train Model</a>
+                <a href="/docs" class="nav-link">📚 API Docs</a>
+            </div>
+        </nav>
+
+        <header class="header">
+            <h1>🔍 Analysis Results</h1>
+            <p>AI-Powered Phishing Detection Analysis Complete</p>
+        </header>
+
+        <div class="stats-grid" id="resultsStats">
+            <!-- Stats will be populated by JavaScript -->
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
+                <h2>📊 Detailed Analysis Results</h2>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button onclick="exportResults('csv')" class="btn" style="padding: 10px 20px; font-size: 0.9rem;">
+                        📄 Export CSV
+                    </button>
+                    <button onclick="exportResults('json')" class="btn" style="padding: 10px 20px; font-size: 0.9rem;">
+                        📋 Export JSON
+                    </button>
+                    <button onclick="window.print()" class="btn" style="padding: 10px 20px; font-size: 0.9rem;">
+                        🖨️ Print
+                    </button>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 20px; padding: 15px; background: linear-gradient(45deg, #f8f9ff, #e8f0ff); border-radius: 10px;">
+                <h3 style="margin-bottom: 10px;">🔍 Search & Filter</h3>
+                <input type="text" id="searchInput" placeholder="🔍 Search results..." 
+                       style="width: 100%; padding: 10px; border: 2px solid #667eea; border-radius: 5px; font-size: 1rem;">
+            </div>
+
+            <div class="result-table">
+                {{ table | safe }}
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="text-align: center; margin-bottom: 20px;">🛡️ Security Recommendations</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div style="padding: 20px; background: linear-gradient(45deg, #ff6b6b, #ee5a24); color: white; border-radius: 15px;">
+                    <h4>🚨 High Risk Sites</h4>
+                    <p>Immediately block access to detected phishing sites. Update security policies and inform users.</p>
+                </div>
+                <div style="padding: 20px; background: linear-gradient(45deg, #feca57, #ff9ff3); color: white; border-radius: 15px;">
+                    <h4>⚠️ Monitor Closely</h4>
+                    <p>Sites with borderline scores should be monitored for changes in behavior patterns.</p>
+                </div>
+                <div style="padding: 20px; background: linear-gradient(45deg, #00d2d3, #54a0ff); color: white; border-radius: 15px;">
+                    <h4>✅ Safe to Access</h4>
+                    <p>Verified safe sites can be whitelisted for improved user experience and performance.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="text-align: center;">
+            <h3>🚀 Next Steps</h3>
+            <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
+                <a href="/" class="btn">📤 Analyze More Data</a>
+                <a href="/dashboard" class="btn">📊 View Dashboard</a>
+                <button onclick="shareResults()" class="btn">📤 Share Results</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the results page
+            addTableInteractivity();
+            calculateStats();
+            addSearchFunctionality();
+            animateElements();
+        });
+
+        function addTableInteractivity() {
+            const table = document.querySelector('.result-table table');
+            if (table) {
+                // Add Bootstrap classes for better styling
+                table.className = 'table table-striped table-hover';
+                
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach((row, index) => {
+                    const predictionCell = row.cells[row.cells.length - 1];
+                    if (predictionCell) {
+                        const prediction = parseFloat(predictionCell.textContent);
+                        if (prediction === 1.0) {
+                            row.classList.add('threat-high');
+                            predictionCell.innerHTML = '🚨 PHISHING DETECTED';
+                        } else {
+                            row.classList.add('threat-low');
+                            predictionCell.innerHTML = '✅ SAFE';
+                        }
+                    }
+                    
+                    // Add click handler for row details
+                    row.addEventListener('click', () => showRowDetails(row, index));
+                    row.style.cursor = 'pointer';
+                });
+
+                // Make table sortable
+                addSortingToTable(table);
+            }
+        }
+
+        function calculateStats() {
+            const table = document.querySelector('.result-table table');
+            if (table) {
+                const rows = table.querySelectorAll('tbody tr');
+                let totalSites = rows.length;
+                let phishingSites = 0;
+                let safeSites = 0;
+
+                rows.forEach(row => {
+                    const predictionCell = row.cells[row.cells.length - 1];
+                    if (predictionCell && predictionCell.textContent.includes('PHISHING')) {
+                        phishingSites++;
+                    } else {
+                        safeSites++;
+                    }
+                });
+
+                updateStatsDisplay(totalSites, phishingSites, safeSites);
+            }
+        }
+
+        function updateStatsDisplay(total, phishing, safe) {
+            const statsContainer = document.getElementById('resultsStats');
+            if (statsContainer) {
+                const threatPercentage = ((phishing/total)*100).toFixed(1);
+                const safePercentage = ((safe/total)*100).toFixed(1);
+                
+                statsContainer.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number">${total}</div>
+                        <div>📊 Total Sites Analyzed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${phishing}</div>
+                        <div>🚨 Phishing Threats (${threatPercentage}%)</div>
+                    </div>
+                    <div class="stat-card safe">
+                        <div class="stat-number">${safe}</div>
+                        <div>✅ Safe Sites (${safePercentage}%)</div>
+                    </div>
+                    <div class="stat-card ${phishing > safe ? '' : 'safe'}">
+                        <div class="stat-number">${phishing > safe ? '🚨' : '✅'}</div>
+                        <div>${phishing > safe ? 'High Risk Dataset' : 'Low Risk Dataset'}</div>
+                    </div>
+                `;
+            }
+        }
+
+        function addSearchFunctionality() {
+            const searchInput = document.getElementById('searchInput');
+            const table = document.querySelector('.result-table table');
+            
+            if (searchInput && table) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const rows = table.querySelectorAll('tbody tr');
+                    
+                    rows.forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        if (text.includes(searchTerm)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            }
+        }
+
+        function addSortingToTable(table) {
+            const headers = table.querySelectorAll('thead th');
+            headers.forEach((header, index) => {
+                header.style.cursor = 'pointer';
+                header.addEventListener('click', () => sortTable(table, index));
+                header.innerHTML += ' ↕️';
+            });
+        }
+
+        function sortTable(table, columnIndex) {
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            rows.sort((a, b) => {
+                const aText = a.cells[columnIndex].textContent.trim();
+                const bText = b.cells[columnIndex].textContent.trim();
+                
+                // Try to parse as numbers
+                const aNum = parseFloat(aText);
+                const bNum = parseFloat(bText);
+                
+                if (!isNaN(aNum) && !isNaN(bNum)) {
+                    return aNum - bNum;
+                }
+                
+                return aText.localeCompare(bText);
+            });
+            
+            rows.forEach(row => tbody.appendChild(row));
+        }
+
+        function showRowDetails(row, index) {
+            const cells = Array.from(row.cells);
+            const headers = Array.from(document.querySelectorAll('.result-table th'));
+            
+            let details = '<h3>🔍 Detailed Analysis</h3><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">';
+            
+            headers.forEach((header, i) => {
+                if (cells[i]) {
+                    details += `
+                        <div style="padding: 10px; background: #f8f9ff; border-radius: 5px;">
+                            <strong>${header.textContent}:</strong><br>
+                            ${cells[i].textContent}
+                        </div>
+                    `;
+                }
+            });
+            
+            details += '</div>';
+            
+            // Create modal
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.8); display: flex; align-items: center;
+                justify-content: center; z-index: 1000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 15px; max-width: 80%; max-height: 80%; overflow-y: auto;">
+                    ${details}
+                    <button onclick="this.closest('div').parentElement.remove()" 
+                            style="margin-top: 20px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        ✖️ Close
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function shareResults() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Network Security Analysis Results',
+                    text: 'Check out these phishing detection results from our AI security system!',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy URL to clipboard
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('🔗 Results URL copied to clipboard!');
+                });
+            }
+        }
+
+        function animateElements() {
+            const cards = document.querySelectorAll('.card, .stat-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }
+
+        // Export functionality (reusing from main.js)
+        function exportResults(format) {
+            const table = document.querySelector('.result-table table');
+            if (!table) return;
+
+            if (format === 'csv') {
+                exportToCSV(table);
+            } else if (format === 'json') {
+                exportToJSON(table);
+            }
+        }
+
+        function exportToCSV(table) {
+            const rows = Array.from(table.querySelectorAll('tr'));
+            const csv = rows.map(row => {
+                const cells = Array.from(row.querySelectorAll('th, td'));
+                return cells.map(cell => `"${cell.textContent}"`).join(',');
+            }).join('\\n');
+
+            downloadFile(csv, 'phishing_analysis_results.csv', 'text/csv');
+        }
+
+        function exportToJSON(table) {
+            const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent.replace(' ↕️', ''));
+            const rows = Array.from(table.querySelectorAll('tbody tr'));
+            
+            const data = rows.map(row => {
+                const cells = Array.from(row.querySelectorAll('td'));
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = cells[index] ? cells[index].textContent : '';
+                });
+                return obj;
+            });
+
+            downloadFile(JSON.stringify(data, null, 2), 'phishing_analysis_results.json', 'application/json');
+        }
+
+        function downloadFile(content, filename, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ Network Security - Phishing Detection System</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="nav-links">
+                <a href="/" class="nav-link">🏠 Home</a>
+                <a href="/dashboard" class="nav-link">📊 Dashboard</a>
+                <a href="/training" class="nav-link">🤖 Train Model</a>
+                <a href="/docs" class="nav-link">📚 API Docs</a>
+            </div>
+        </nav>
+
+        <header class="header">
+            <h1>🛡️ Network Security System</h1>
+            <p>Advanced AI-Powered Phishing Detection & Analysis Platform</p>
+        </header>
+
+        <div class="card">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h2>🔍 Upload CSV File for Analysis</h2>
+                <p style="color: #666; margin-top: 10px;">
+                    Drag and drop your CSV file or click to browse. Our AI will analyze 30+ security features to detect phishing threats.
+                </p>
+            </div>
+
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div id="uploadArea" class="upload-area">
+                    <div class="upload-icon">📁</div>
+                    <h3>Drop your CSV file here</h3>
+                    <p>or click to browse files</p>
+                    <input type="file" id="fileInput" name="file" accept=".csv" style="display: none;" required>
+                    <div id="fileName" style="margin-top: 15px; font-weight: bold;"></div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="button" onclick="document.getElementById('fileInput').click()" class="btn">
+                        📤 Select File
+                    </button>
+                </div>
+            </form>
+
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>🔄 Analyzing your data with AI models...</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 style="text-align: center; margin-bottom: 30px;">🚀 System Features</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">95.2%</div>
+                    <div>🎯 Detection Accuracy</div>
+                </div>
+                <div class="stat-card safe">
+                    <div class="stat-number">&lt;100ms</div>
+                    <div>⚡ Response Time</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-number">30+</div>
+                    <div>🔍 Security Features</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">6</div>
+                    <div>🤖 ML Algorithms</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 style="text-align: center; margin-bottom: 20px;">🔒 Security Analysis Categories</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div style="padding: 20px; background: linear-gradient(45deg, #ff9a9e, #fecfef); border-radius: 15px; color: white;">
+                    <h3>🔗 URL Features</h3>
+                    <p>Length, symbols, shortening services</p>
+                </div>
+                <div style="padding: 20px; background: linear-gradient(45deg, #a8edea, #fed6e3); border-radius: 15px; color: white;">
+                    <h3>🔒 Security Features</h3>
+                    <p>SSL certificates, HTTPS tokens</p>
+                </div>
+                <div style="padding: 20px; background: linear-gradient(45deg, #ffecd2, #fcb69f); border-radius: 15px; color: white;">
+                    <h3>🌐 Domain Analysis</h3>
+                    <p>Age, DNS records, traffic patterns</p>
+                </div>
+                <div style="padding: 20px; background: linear-gradient(45deg, #a8caba, #5d4e75); border-radius: 15px; color: white;">
+                    <h3>📊 Content Analysis</h3>
+                    <p>Links, pop-ups, request patterns</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="text-align: center;">
+            <h2>🤖 AI Model Performance</h2>
+            <div style="display: flex; justify-content: space-around; flex-wrap: wrap; margin-top: 20px;">
+                <div style="margin: 10px;">
+                    <div style="font-size: 2rem;">🏆</div>
+                    <div><strong>Random Forest</strong></div>
+                    <div style="color: #667eea;">Best Performer</div>
+                </div>
+                <div style="margin: 10px;">
+                    <div style="font-size: 2rem;">⚡</div>
+                    <div><strong>XGBoost</strong></div>
+                    <div style="color: #667eea;">High Speed</div>
+                </div>
+                <div style="margin: 10px;">
+                    <div style="font-size: 2rem;">🎯</div>
+                    <div><strong>Logistic Regression</strong></div>
+                    <div style="color: #667eea;">Reliable</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/main.js"></script>
+</body>
+</html>

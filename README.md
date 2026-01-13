@@ -7,6 +7,7 @@
 ![Machine Learning](https://img.shields.io/badge/Machine-Learning-orange?style=for-the-badge&logo=tensorflow)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Database-green?style=for-the-badge&logo=mongodb)
 ![Docker](https://img.shields.io/badge/Docker-Containerized-blue?style=for-the-badge&logo=docker)
+![FastAPI](https://img.shields.io/badge/FastAPI-Web_App-green?style=for-the-badge&logo=fastapi)
 ![MLOps](https://img.shields.io/badge/MLOps-Pipeline-purple?style=for-the-badge&logo=kubernetes)
 
 </div>
@@ -153,6 +154,8 @@ flowchart TD
 | 📊 **Traffic Pattern Analysis** | Analyzes web traffic and ranking patterns | Medium |
 | 🔍 **Content Analysis** | Examines page content and link structures | High |
 | ⚡ **Real-time Processing** | Instant classification with <100ms response | Critical |
+| 🌐 **Interactive Web Interface** | Modern dashboard with drag-drop upload | High |
+| 📊 **Detailed Analytics** | Per-record analysis with confidence scores | High |
 
 ### 🛠️ Technical Architecture Features
 - 🏗️ **Modular Design** - Clean, maintainable, and extensible codebase
@@ -163,6 +166,15 @@ flowchart TD
 - ☁️ **Cloud-Native Architecture** - Containerized and cloud-ready deployment
 - 🔐 **Security-First Design** - Built with cybersecurity best practices
 - 📝 **Comprehensive Logging** - Detailed audit trails and debugging support
+
+### 🌐 FastAPI Web Application Features
+- **Interactive Dashboard** - Glass morphism design with drag-drop upload
+- **Real-time Analytics** - Live system monitoring and health checks  
+- **Detailed Results** - Interactive tables with sorting and filtering
+- **Export Capabilities** - CSV, JSON, and print functionality
+- **Modal Analytics** - Click any record for detailed feature analysis
+- **Responsive Design** - Works seamlessly on all devices
+- **Error Handling** - Comprehensive validation and user feedback
 
 ### 🤖 Machine Learning Features
 - **6 ML Algorithms** - Random Forest, XGBoost, Logistic Regression, KNN, Decision Tree, AdaBoost
@@ -178,6 +190,10 @@ flowchart TD
 📦 E2E_NetworkSecurity/
 ├── 📊 Network_data/
 │   └── phisingData.csv              # 📈 11,055 training samples
+├── 🌐 templates/                   # 🎨 HTML templates for web interface
+│   ├── dashboard.html               # 🏠 Interactive dashboard
+│   └── prediction.html              # 📊 Results display page
+├── 🎨 static/                     # 🖼️ Static assets (CSS, JS, images)
 ├── 🏗️ networksecurity/
 │   ├── 🔧 components/
 │   │   ├── data_ingestion.py        # 📥 Data loading & train-test split
@@ -210,6 +226,7 @@ flowchart TD
 ├── 🐳 Dockerfile                  # 📦 Container configuration
 ├── 📋 requirements.txt             # 📚 Python dependencies
 ├── ⚙️ setup.py                   # 📦 Package installation setup
+├── 🌐 app.py                     # 🎯 FastAPI web application
 ├── 🚀 main.py                    # 🎯 Main pipeline execution
 ├── 📤 push_data.py               # 🗄️ MongoDB data upload utility
 ├── 🔧 .env                       # 🔐 Environment variables
@@ -311,6 +328,33 @@ python push_data.py
 ```bash
 python main.py
 ```
+
+3. **🌐 Start Web Application**
+```bash
+python app.py
+# Access at: http://localhost:8080
+```
+
+### 📊 Web Interface Features
+
+#### 🏠 Interactive Dashboard
+- **Real-time System Monitoring** - Live health checks and status
+- **Drag & Drop File Upload** - Easy CSV file processing
+- **Glass Morphism Design** - Modern, professional UI
+- **Responsive Layout** - Works on all devices
+
+#### 🔍 Prediction Results
+- **Interactive Data Tables** - Sortable, searchable results
+- **Visual Charts** - Pie charts and bar graphs
+- **Export Options** - CSV, JSON, and print functionality
+- **Detailed Analytics** - Click any record for deep analysis
+- **Risk Assessment** - Color-coded threat levels
+
+#### 📊 Analytics Features
+- **Feature Analysis** - 30+ security parameters
+- **Risk Factors** - Identified threat indicators
+- **Confidence Scores** - AI prediction certainty
+- **Model Explanations** - How decisions are made
 
 ### 📊 Pipeline Execution Flow
 
