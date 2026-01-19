@@ -238,10 +238,18 @@ flowchart LR
     H --> K
     I --> L
     
-    style A fill:#e3f2fd
-    style D fill:#fff3e0
-    style G fill:#f3e5f5
-    style J fill:#e8f5e8
+    style A fill:#FF6B6B,stroke:#E55555,stroke-width:2px,color:#fff
+    style B fill:#FF6B6B,stroke:#E55555,stroke-width:2px,color:#fff
+    style C fill:#FF6B6B,stroke:#E55555,stroke-width:2px,color:#fff
+    style D fill:#4ECDC4,stroke:#3CBCB4,stroke-width:2px,color:#fff
+    style E fill:#4ECDC4,stroke:#3CBCB4,stroke-width:2px,color:#fff
+    style F fill:#4ECDC4,stroke:#3CBCB4,stroke-width:2px,color:#fff
+    style G fill:#45B7D1,stroke:#3A9BC1,stroke-width:2px,color:#fff
+    style H fill:#45B7D1,stroke:#3A9BC1,stroke-width:2px,color:#fff
+    style I fill:#45B7D1,stroke:#3A9BC1,stroke-width:2px,color:#fff
+    style J fill:#96CEB4,stroke:#7FB69E,stroke-width:2px,color:#fff
+    style K fill:#96CEB4,stroke:#7FB69E,stroke-width:2px,color:#fff
+    style L fill:#96CEB4,stroke:#7FB69E,stroke-width:2px,color:#fff
 ```
 
 | Feature | Description | Impact | Processing Time |
@@ -536,7 +544,7 @@ trainer = ModelTrainer(transformation_artifact, trainer_config)
 model_artifact = trainer.initiate_model_trainer()
 ```
 
-## 🧪 Testing Framework
+### 🧪 Testing Framework
 
 ### 🔬 Test Categories
 
@@ -551,18 +559,27 @@ model_artifact = trainer.initiate_model_trainer()
 
 ### 🏃♂️ Running Tests
 ```bash
-# Run all tests with coverage
-pytest tests/ --cov=networksecurity --cov-report=html
+# Run all unit tests with coverage
+pytest tests/unit/ --cov=networksecurity --cov-report=html
 
 # Run specific test categories
-pytest tests/unit/          # Unit tests only
-pytest tests/integration/   # Integration tests only
-pytest tests/data/          # Data quality tests
-pytest tests/ml/            # ML model tests
+pytest tests/unit/test_schema_validation.py -v  # Schema tests
+pytest tests/unit/test_model.py -v              # Model tests
+pytest tests/unit/test_utils.py -v              # Utility tests
+pytest tests/unit/test_app.py -v                # FastAPI tests
+pytest tests/integration/ -v                    # Integration tests
 
-# Run performance benchmarks
-pytest tests/performance/ -v --benchmark-only
+# Run with verbose output
+pytest tests/unit/ -v --tb=short
 ```
+
+### 🎯 Test Coverage Areas
+- ✅ **Schema Validation** - YAML schema structure and data validation
+- ✅ **Model Functionality** - Binary predictions and output format
+- ✅ **API Endpoints** - FastAPI health, stats, and prediction routes
+- ✅ **Utility Functions** - Object serialization and file operations
+- ✅ **Configuration** - Pipeline and component configurations
+- ✅ **Error Handling** - Exception handling and edge cases
 
 ## 📊 Model Performance
 
@@ -574,6 +591,8 @@ pie title Model Performance Metrics
     "Precision (94.8%)" : 94.8
     "Recall (93.5%)" : 93.5
     "F1-Score (94.1%)" : 94.1
+    
+    %%{init: {'theme':'base', 'themeVariables': { 'pie1': '#FF6B6B', 'pie2': '#4ECDC4', 'pie3': '#45B7D1', 'pie4': '#96CEB4', 'pieOuterStrokeWidth': '2px'}}}%%
 ```
 
 ### 🎯 Detailed Performance Analysis
@@ -632,7 +651,10 @@ jobs:
       - name: Lint code
         run: echo "Linting repository"
       - name: Run unit tests
-        run: echo "Running unit tests"
+        run: |
+          pip install -r requirements.txt
+          pip install -e .
+          python -m pytest tests/unit/ -v --tb=short
 
   build-and-push-ecr-image:
     name: Continuous Delivery
@@ -680,7 +702,7 @@ jobs:
 ```
 
 ### 🔧 Pipeline Features
-- **✅ Continuous Integration** - Automated linting and testing
+- **✅ Continuous Integration** - Automated linting and testing with pytest
 - **🐳 Docker Build & Push** - Automated containerization to AWS ECR
 - **🚀 Continuous Deployment** - Automated deployment to self-hosted runner
 - **🔄 Zero-Downtime Deployment** - Graceful container replacement
@@ -689,6 +711,7 @@ jobs:
 - **💾 Disk Management** - Automatic cleanup to prevent space issues
 - **🔍 Health Monitoring** - Deployment verification and health checks
 - **🔥 Firewall Management** - Network configuration validation
+- **🧪 Automated Testing** - Unit tests run on every commit
 
 ### 🏗️ Infrastructure Architecture
 
@@ -727,9 +750,18 @@ graph TB
     J --> K
     K --> L
     
-    style A fill:#e3f2fd
-    style J fill:#c8e6c9
-    style I fill:#fff3e0
+    style A fill:#FF6B6B,stroke:#E55555,stroke-width:3px,color:#fff
+    style B fill:#FF6B6B,stroke:#E55555,stroke-width:3px,color:#fff
+    style C fill:#FF6B6B,stroke:#E55555,stroke-width:3px,color:#fff
+    style D fill:#4ECDC4,stroke:#3CBCB4,stroke-width:3px,color:#fff
+    style E fill:#4ECDC4,stroke:#3CBCB4,stroke-width:3px,color:#fff
+    style F fill:#4ECDC4,stroke:#3CBCB4,stroke-width:3px,color:#fff
+    style G fill:#4ECDC4,stroke:#3CBCB4,stroke-width:3px,color:#fff
+    style H fill:#4ECDC4,stroke:#3CBCB4,stroke-width:3px,color:#fff
+    style I fill:#45B7D1,stroke:#3A9BC1,stroke-width:3px,color:#fff
+    style J fill:#96CEB4,stroke:#7FB69E,stroke-width:3px,color:#fff
+    style K fill:#96CEB4,stroke:#7FB69E,stroke-width:3px,color:#fff
+    style L fill:#96CEB4,stroke:#7FB69E,stroke-width:3px,color:#fff
 ```
 
 ### 🔧 Required GitHub Secrets

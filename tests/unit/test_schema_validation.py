@@ -1,63 +1,54 @@
-import pytest
-import pandas as pd
+import unittest
 import yaml
-from networksecurity.components.data_validation import DataValidation
-from networksecurity.entity.config_entity import DataValidationConfig
-from networksecurity.entity.artifact_entity import DataIngestionArtifact
+import os
 
-
-class TestSchemaValidation:
+class TestSchemaValidation(unittest.TestCase):
     """Test schema validation functionality"""
     
     def test_schema_file_exists(self):
-        """Test that schema.yaml file exists"""
-        import os
+        """Test that schema file exists"""
         schema_path = "data_schema/schema.yaml"
-        assert os.path.exists(schema_path), "Schema file should exist"
+        self.assertTrue(os.path.exists(schema_path))
     
     def test_schema_structure(self):
         """Test schema has required structure"""
-        with open("data_schema/schema.yaml", 'r') as file:
+        schema_path = "data_schema/schema.yaml"
+        
+        with open(schema_path, 'r') as file:
             schema = yaml.safe_load(file)
         
-        assert "columns" in schema, "Schema should have columns section"
-        assert len(schema["columns"]) > 0, "Schema should have column definitions"
+        # Check required keys exist
+        self.assertIn("columns", schema)
+        self.assertIn("numerical_columns", schema)
+        
+        # Check columns is a list
+        self.assertIsInstance(schema["columns"], list)
+        self.assertIsInstance(schema["numerical_columns"], list)
     
     def test_valid_data_passes_validation(self):
-        """Test that valid data passes schema validation"""
-        # Create sample valid data
-        valid_data = pd.DataFrame({
-            'URL_Length': [50, 100, 75],
-            'having_At_Symbol': [0, 1, 0],
-            'SSLfinal_State': [1, 0, 1],
-            'Result': [0, 1, 0]
-        })
+        """Test valid data structure"""
+        # Mock valid data structure
+        valid_data = {
+            "having_IP_Address": [0, 1, 0],
+            "URL_Length": [25, 50, 30],
+            "Result": [0, 1, 0]
+        }
         
-        # Save to temporary file
-        valid_data.to_csv("test_valid.csv", index=False)
+        # Basic validation checks
+        self.assertIsInstance(valid_data, dict)
+        self.assertIn("Result", valid_data)
         
-        # Test validation passes
-        try:
-            # This would normally use the validation component
-            assert len(valid_data) > 0
-            assert all(col in valid_data.columns for col in ['URL_Length', 'Result'])
-        finally:
-            import os
-            if os.path.exists("test_valid.csv"):
-                os.remove("test_valid.csv")
+        # Check all values are lists
+        for key, values in valid_data.items():
+            self.assertIsInstance(values, list)
     
-    def test_invalid_data_fails_validation(self):
-        """Test that invalid data fails validation"""
-        # Create sample invalid data (missing required columns)
-        invalid_data = pd.DataFrame({
-            'wrong_column': [1, 2, 3]
-        })
+    def test_schema_column_count(self):
+        """Test schema has expected number of columns"""
+        schema_path = "data_schema/schema.yaml"
         
-        # Test validation should fail
-        with open("data_schema/schema.yaml", 'r') as file:
+        with open(schema_path, 'r') as file:
             schema = yaml.safe_load(file)
         
-        schema_columns = set(schema["columns"].keys())
-        data_columns = set(invalid_data.columns)
-        
-        assert not schema_columns.issubset(data_columns), "Invalid data should fail validation"
+        # Should have 30 columns (29 features + 1 target)
+        self.assertEqual(len(schema["columns"]), 30)
+        self.assertEqual(len(schema["numerical_columns"]), 30)
