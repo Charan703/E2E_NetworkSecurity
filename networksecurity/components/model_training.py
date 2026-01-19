@@ -19,10 +19,19 @@ from sklearn.ensemble import (
     AdaBoostClassifier,
 )
 from sklearn.tree import DecisionTreeClassifier
-import mlflow
 
-import dagshub
-dagshub.init(repo_owner='charanteja.kammari939', repo_name='E2E_NetworkSecurity', mlflow=True)
+# Only import MLflow/DagHub if not in production
+try:
+    if os.getenv('ENVIRONMENT') != 'production':
+        import mlflow
+        import dagshub
+        dagshub.init(repo_owner='charanteja.kammari939', repo_name='E2E_NetworkSecurity', mlflow=True)
+        MLFLOW_AVAILABLE = True
+    else:
+        MLFLOW_AVAILABLE = False
+except Exception as e:
+    logging.warning(f"MLflow/DagHub not available: {e}")
+    MLFLOW_AVAILABLE = False
 
 class ModelTrainer:
     def __init__(self, data_transformation_artifact: DataTransformationArtifact, model_trainer_config: ModelTrainerConfig):
@@ -34,6 +43,10 @@ class ModelTrainer:
     
     def track_mlflow(self, model, classification_metric):
         try:
+            if not MLFLOW_AVAILABLE:
+                logging.info(f"MLflow disabled - Model metrics: F1: {classification_metric.f1_score}, Precision: {classification_metric.precision_score}, Recall: {classification_metric.recall_score}")
+                return
+                
             # Use DagsHub remote tracking (remove local tracking URI)
             with mlflow.start_run():
                 f1_score = classification_metric.f1_score
