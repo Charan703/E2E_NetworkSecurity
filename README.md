@@ -203,30 +203,45 @@ flowchart TD
 ### 🔍 Advanced Detection Capabilities
 
 ```mermaid
-gantt
-    title Feature Analysis Timeline
-    dateFormat X
-    axisFormat %s
+flowchart LR
+    subgraph "URL Analysis"
+        A[IP Detection<br/>~5ms]
+        B[URL Structure<br/>~8ms]
+        C[Shortening Service<br/>~3ms]
+    end
     
-    section URL Analysis
-    IP Detection     :done, ip, 0, 1s
-    URL Structure    :done, url, 1s, 2s
-    Shortening Service :done, short, 2s, 3s
+    subgraph "Security"
+        D[SSL Validation<br/>~12ms]
+        E[HTTPS Token<br/>~4ms]
+        F[Certificate Check<br/>~6ms]
+    end
     
-    section Security
-    SSL Validation   :done, ssl, 3s, 4s
-    HTTPS Token      :done, https, 4s, 5s
-    Certificate Check :done, cert, 5s, 6s
+    subgraph "Domain"
+        G[Age Analysis<br/>~10ms]
+        H[DNS Records<br/>~15ms]
+        I[Traffic Patterns<br/>~8ms]
+    end
     
-    section Domain
-    Age Analysis     :done, age, 6s, 7s
-    DNS Records      :done, dns, 7s, 8s
-    Traffic Patterns :done, traffic, 8s, 9s
+    subgraph "Content"
+        J[Link Analysis<br/>~20ms]
+        K[Form Detection<br/>~6ms]
+        L[Page Rank<br/>~5ms]
+    end
     
-    section Content
-    Link Analysis    :done, links, 9s, 10s
-    Form Detection   :done, forms, 10s, 11s
-    Page Rank        :done, rank, 11s, 12s
+    A --> D
+    B --> E
+    C --> F
+    D --> G
+    E --> H
+    F --> I
+    G --> J
+    H --> K
+    I --> L
+    
+    style A fill:#e3f2fd
+    style D fill:#fff3e0
+    style G fill:#f3e5f5
+    style J fill:#e8f5e8
 ```
 
 | Feature | Description | Impact | Processing Time |
