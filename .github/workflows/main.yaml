@@ -28,6 +28,12 @@ jobs:
             - name: Checkout Code
               uses: actions/checkout@v3
 
+            - name: Debug - List files
+              run: |
+                ls -la
+                echo "Looking for Dockerfile:"
+                find . -name "*ocker*" -type f
+
             - name: Install utilities
               run: |
                 sudo apt-get update
