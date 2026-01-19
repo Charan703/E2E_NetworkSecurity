@@ -19,7 +19,9 @@ jobs:
               run: echo "Linting repository"
             
             - name: Run unit tests
-              run: echo "Running unit tests"
+              run: |
+                python -m pip install pytest pytest-cov
+                python -m pytest tests/ -v --tb=short
     build-and-push-ecr-image:
         name: Continuous Delivery
         needs: integration

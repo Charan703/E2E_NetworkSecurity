@@ -10,5 +10,11 @@ mlflow
 dagshub
 FastAPI
 uvicorn
+pytest
+pytest-cov
+jinja2
+python-multipart
+dill
+scipy
 
 ## -e .
