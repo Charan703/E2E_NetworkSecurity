@@ -139,8 +139,24 @@ jobs:
             
             - name: Run Docker image to serve users
               run: |
-                IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-                docker run -d -p 8080:8080 --ipc="host" --name=networksecurity  -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID}}' -e "AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}" -e "AWS_REGION=${{secrets.AWS_REGION}}" ${{secrets.AWS_ECR_LOGIN_URI}}/${{secrets.ECR_REPOSITORY_NAME}}:latest
+                docker run -d -p 8080:8080 --name=networksecurity \
+                  -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID}}' \
+                  -e "AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}" \
+                  -e "AWS_REGION=${{secrets.AWS_REGION}}" \
+                  ${{secrets.AWS_ECR_LOGIN_URI}}/${{secrets.ECR_REPOSITORY_NAME}}:latest
+                
+            - name: Verify deployment
+              run: |
+                echo "Checking container status..."
+                docker ps -a
+                echo "Checking container logs..."
+                docker logs networksecurity
+                echo "Checking port binding..."
+                sudo netstat -tlnp | grep :8080
+                echo "Testing local connection..."
+                curl -f http://localhost:8080/health || echo "Health check failed"
+                echo "Checking firewall..."
+                sudo ufw status
             
             - name: Clean previous images and containers
               run: |
