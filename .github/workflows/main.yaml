@@ -106,10 +106,22 @@ jobs:
         steps:
             - name: Free up disk space
               run: |
+                echo "Checking disk usage before cleanup..."
                 df -h
+                echo "Cleaning Docker resources..."
                 docker system prune -af --volumes
+                echo "Cleaning system cache..."
                 sudo apt-get clean
+                sudo apt-get autoclean
+                sudo apt-get autoremove -y
+                echo "Cleaning logs..."
                 sudo rm -rf /tmp/*
+                sudo rm -rf /var/log/*.log
+                sudo rm -rf /home/ubuntu/_diag/*
+                sudo rm -rf /home/ubuntu/.cache/*
+                echo "Cleaning GitHub runner logs..."
+                sudo find /home/ubuntu -name "*.log" -type f -delete 2>/dev/null || true
+                echo "Final disk usage..."
                 df -h
                 
             - name: Checkout Code
