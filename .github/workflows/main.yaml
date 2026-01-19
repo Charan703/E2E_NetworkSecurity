@@ -148,11 +148,12 @@ jobs:
                 echo "Checking container logs..."
                 docker logs networksecurity
                 echo "Checking port binding..."
-                sudo netstat -tlnp | grep :8080
+                ss -tlnp | grep :8080 || echo "Port 8080 not found"
                 echo "Testing local connection..."
+                sleep 5
                 curl -f http://localhost:8080/health || echo "Health check failed"
                 echo "Checking firewall..."
-                sudo ufw status
+                sudo ufw status || echo "UFW not available"
             
             - name: Clean previous images and containers
               run: |
