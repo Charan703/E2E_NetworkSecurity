@@ -57,8 +57,18 @@ jobs:
                 ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
                 IMAGE_TAG: latest
               run: |
-                # Build a docker container and
-                # push it to ECR so that it can be deployed to ECS
+                # Create Dockerfile if not found
+                if [ ! -f Dockerfile ]; then
+                  cat > Dockerfile << 'EOF'
+                FROM python:3.10-slim-buster
+                WORKDIR /app
+                COPY . /app
+                RUN apt update -y && apt install awscli -y
+                RUN apt-get update && pip install -r requirements.txt
+                CMD ["python3", "app.py"]
+                EOF
+                fi
+                # Build a docker container and push it to ECR
                 docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
                 docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
                 echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
