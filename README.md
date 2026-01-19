@@ -654,15 +654,29 @@ jobs:
     needs: build-and-push-ecr-image
     runs-on: self-hosted
     steps:
+      - name: Free up disk space
+        run: |
+          docker system prune -af --volumes
+          sudo apt-get clean
       - name: Pull latest image
-        run: docker pull ${{needs.build-and-push-ecr-image.outputs.image}}
+        run: docker pull ${{secrets.AWS_ECR_LOGIN_URI}}/${{secrets.ECR_REPOSITORY_NAME}}:latest
+      - name: Stop and remove container if running
+        run: |
+          if docker ps -q --filter "name=networksecurity" | grep -q .; then
+            docker stop networksecurity && docker rm -fv networksecurity
+          fi
       - name: Run Docker image to serve users
         run: |
           docker run -d -p 8080:8080 --name=networksecurity \
             -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID}}' \
             -e "AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}" \
             -e "AWS_REGION=${{secrets.AWS_REGION}}" \
-            ${{needs.build-and-push-ecr-image.outputs.image}}
+            ${{secrets.AWS_ECR_LOGIN_URI}}/${{secrets.ECR_REPOSITORY_NAME}}:latest
+      - name: Verify deployment
+        run: |
+          docker ps -a
+          docker logs networksecurity
+          curl -f http://localhost:8080/health
 ```
 
 ### 🔧 Pipeline Features
@@ -672,6 +686,9 @@ jobs:
 - **🔄 Zero-Downtime Deployment** - Graceful container replacement
 - **📊 Environment Management** - Secure secrets handling
 - **🛡️ Security Scanning** - Automated vulnerability checks
+- **💾 Disk Management** - Automatic cleanup to prevent space issues
+- **🔍 Health Monitoring** - Deployment verification and health checks
+- **🔥 Firewall Management** - Network configuration validation
 
 ### 🏗️ Infrastructure Architecture
 
@@ -722,6 +739,19 @@ AWS_ACCESS_KEY_ID=your_aws_access_key
 AWS_SECRET_ACCESS_KEY=your_aws_secret_key
 AWS_REGION=us-east-1
 ECR_REPOSITORY_NAME=networksecurity
+AWS_ECR_LOGIN_URI=your_account_id.dkr.ecr.us-east-1.amazonaws.com
+```
+
+### 🐳 Production Deployment
+```bash
+# Access the deployed application
+http://your-server-ip:8080
+
+# Health check endpoint
+http://your-server-ip:8080/health
+
+# API documentation
+http://your-server-ip:8080/docs
 ```
 
 ### 🐳 Optimized Dockerfile
