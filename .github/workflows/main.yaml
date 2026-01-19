@@ -101,6 +101,14 @@ jobs:
         needs: build-and-push-ecr-image
         runs-on: self-hosted
         steps:
+            - name: Free up disk space
+              run: |
+                df -h
+                docker system prune -af --volumes
+                sudo apt-get clean
+                sudo rm -rf /tmp/*
+                df -h
+                
             - name: Checkout Code
               uses: actions/checkout@v3
             
