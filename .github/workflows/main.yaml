@@ -86,17 +86,21 @@ jobs:
                 
             - name: Set image output
               id: set-image
+              if: success()
               env:
                 ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
                 ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
                 IMAGE_TAG: latest
               run: |
+                echo "ECR_REGISTRY: $ECR_REGISTRY"
+                echo "ECR_REPOSITORY: $ECR_REPOSITORY"
                 IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
                 echo "Setting image output: $IMAGE"
                 echo "image=$IMAGE" >> $GITHUB_OUTPUT
     Continuous-Deployment:
         needs: build-and-push-ecr-image
         runs-on: self-hosted
+        if: success() && needs.build-and-push-ecr-image.outputs.image != ''
         steps:
             - name: Checkout Code
               uses: actions/checkout@v3
