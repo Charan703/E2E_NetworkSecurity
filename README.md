@@ -1029,7 +1029,7 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 | 📧 Contact | 🔗 Link |
 |------------|----------|
 | **Email** | charancherry.s703@gmail.com |
-| **LinkedIn** | [Connect with CHARAN](https://linkedin.com/in/charan) |
+| **LinkedIn** | [Connect with CHARAN](https://linkedin.com/in/charan-teja-kammari/) |
 | **GitHub** | [@charantejakammari](https://github.com/charantejakammari) |
 | **Issues** | [Report Issues](https://github.com/charantejakammari/E2E_NetworkSecurity/issues) |
 

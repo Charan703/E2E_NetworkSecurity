@@ -22,7 +22,7 @@ jobs:
               run: |
                 pip install -r requirements.txt
                 pip install -e .
-                python -m pytest tests/unit/ -v --tb=short --maxfail=5
+                python -m pytest tests/unit/ -v --tb=short --maxfail=5 --cov=networksecurity --cov-report=term-missing
     build-and-push-ecr-image:
         name: Continuous Delivery
         needs: integration
@@ -142,7 +142,12 @@ jobs:
             
             - name: Run Docker image to serve users
               run: |
-                docker run -d -p 8080:8080 --name=networksecurity -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID}}' -e "AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}" -e "AWS_REGION=${{secrets.AWS_REGION}}" ${{secrets.AWS_ECR_LOGIN_URI}}/${{secrets.ECR_REPOSITORY_NAME}}:latest
+                docker run -d -p 8080:8080 --name=networksecurity \
+                  -e 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID}}' \
+                  -e "AWS_SECRET_ACCESS_KEY=${{secrets.AWS_SECRET_ACCESS_KEY}}" \
+                  -e "AWS_REGION=${{secrets.AWS_REGION}}" \
+                  -e "MONGO_DB_URI=${{secrets.MONGO_DB_URI}}" \
+                  ${{secrets.AWS_ECR_LOGIN_URI}}/${{secrets.ECR_REPOSITORY_NAME}}:latest
                 
             - name: Verify deployment
               run: |
@@ -162,6 +167,32 @@ jobs:
                 netstat -tlnp | grep :8080 || echo "App not listening on 8080"
                 echo "Container environment check..."
                 docker exec networksecurity ps aux | grep python || echo "Python process not found"
+                
+            - name: Debug application startup
+              run: |
+                echo "=== APPLICATION STARTUP DEBUG ==="
+                echo "Checking container logs for errors..."
+                docker logs networksecurity --tail 50
+                
+                echo "=== CHECKING PYTHON PROCESS ==="
+                docker exec networksecurity ps aux || echo "Cannot exec into container"
+                
+                echo "=== CHECKING APP FILES ==="
+                docker exec networksecurity ls -la /app || echo "Cannot list app directory"
+                
+                echo "=== TESTING PYTHON DIRECTLY ==="
+                docker exec networksecurity python3 --version || echo "Python not found"
+                
+                echo "=== CHECKING REQUIREMENTS ==="
+                docker exec networksecurity pip list | head -20 || echo "Cannot check pip packages"
+                
+                echo "=== MANUAL APP START TEST ==="
+                docker exec -d networksecurity python3 -c "import app; print('App import successful')" || echo "App import failed"
+                
+                echo "=== CONTAINER RESTART TEST ==="
+                docker restart networksecurity
+                sleep 5
+                docker logs networksecurity --tail 20
                 
             - name: External connectivity diagnosis
               run: |
