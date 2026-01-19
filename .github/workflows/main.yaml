@@ -25,7 +25,7 @@ jobs:
         needs: integration
         runs-on: ubuntu-latest
         outputs:
-          image: ${{ steps.build-image.outputs.image }}
+          image: ${{ steps.set-image.outputs.image }}
         steps:
             - name: Checkout Code
               uses: actions/checkout@v3
@@ -59,6 +59,16 @@ jobs:
                 ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
                 IMAGE_TAG: latest
               run: |
+                # Validate required variables
+                if [ -z "$ECR_REGISTRY" ]; then
+                  echo "ERROR: ECR registry is empty"
+                  exit 1
+                fi
+                if [ -z "$ECR_REPOSITORY" ]; then
+                  echo "ERROR: ECR repository is empty"
+                  exit 1
+                fi
+                
                 # Create Dockerfile if not found
                 if [ ! -f Dockerfile ]; then
                   cat > Dockerfile << 'EOF'
@@ -69,10 +79,21 @@ jobs:
                 CMD ["python3", "app.py"]
                 EOF
                 fi
-                # Build a docker container and push it to ECR
+                
+                # Build and push
                 docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
                 docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-                echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+                
+            - name: Set image output
+              id: set-image
+              env:
+                ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+                ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
+                IMAGE_TAG: latest
+              run: |
+                IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+                echo "Setting image output: $IMAGE"
+                echo "image=$IMAGE" >> $GITHUB_OUTPUT
     Continuous-Deployment:
         needs: build-and-push-ecr-image
         runs-on: self-hosted
@@ -93,7 +114,14 @@ jobs:
 
             - name: Pull latest image
               run: |
-                docker pull ${{needs.build-and-push-ecr-image.outputs.image}}
+                IMAGE="${{ needs.build-and-push-ecr-image.outputs.image }}"
+                echo "Build job image output: '$IMAGE'"
+                echo "Build job outputs: ${{ toJson(needs.build-and-push-ecr-image.outputs) }}"
+                if [ -z "$IMAGE" ]; then
+                  echo "ERROR: image output from build job is empty. Aborting docker pull."
+                  exit 1
+                fi
+                docker pull "$IMAGE"
             
             - name: Stop and remove container if running
               run: |
